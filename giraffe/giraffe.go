@@ -68,3 +68,25 @@ func VisualizeNodeSiblings(n *Node, prefix string, directChild bool) {
         VisualizeNodeSiblings(sibling, prefix+"|   ", false)
     }
 }
+
+func GetCentralityDegree(g *Graph) []float32 {
+    var ret []float32
+
+    for i, node := range *g {
+        current := node.index
+        var degree int
+
+        for j := i; j < len(*g); j++ {
+            for _, x := range (*g)[j].siblings {
+                if x.index == current {
+                    degree++
+                }
+            }
+        }
+
+        centrality := float32(degree) / float32(len(*g) - 1)
+        ret = append(ret, centrality)
+    }
+
+    return ret
+}

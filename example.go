@@ -2,6 +2,7 @@ package main
 
 import (
     "github.com/aadv1k/giraffe/giraffe"
+    "fmt" 
 )
 
 func main() {
@@ -16,4 +17,6 @@ func main() {
     giraffe.CreateNode(&g, 0, []int{1, 2})                // Node 0 connected to Node 1 and Node 2
 
     giraffe.VisualizeNode(giraffe.FindNode(g, 0))
+
+    fmt.Print("Degree: ", giraffe.GetCentralityDegree(&g))
 }
