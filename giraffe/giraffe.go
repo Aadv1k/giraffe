@@ -27,8 +27,49 @@ func (g *Graph) AddVertex(v *Vertex) {
 	}
 }
 
+func PopLast[K any](arr[]K) K {
+	if len(arr) == 0 {
+		return *new(K)
+	}
+
+	last := len(arr) - 1
+	elem := arr[last]
+	arr = append(arr[:last], arr[last+1:]...)
+
+	return elem
+}
+
+// Do a Depth-First Search to find the vertex
+func (g *Graph) FindVertexDFS(index int) (*Vertex, []*Vertex) {
+	var stack []*Vertex
+	var visited []*Vertex
+
+	stack = append(stack, g.Vertices[0])
+
+	for vtx := PopLast(stack); vtx != nil; {
+		nodeIsVisited := false
+		for _, visitedVtx := range visited {
+			if visitedVtx.Index == vtx.Index {
+				nodeIsVisited = true
+				break
+			}
+		}
+
+		if nodeIsVisited { continue }
+
+		stack = append(stack, vtx.Siblings...)
+		visited = append(visited, vtx)
+
+		if index == vtx.Index {
+			return vtx, visited
+		}
+	}
+
+	return nil, nil
+}
+
 // Do a Breadth-First Search to find the vertex
-func (g *Graph) FindVertex(index int) *Vertex {
+func (g *Graph) FindVertex(index int) [*Vertex, []*Vertex] {
 	var queue []*Vertex
 	var visited []*Vertex
 
@@ -52,7 +93,7 @@ func (g *Graph) FindVertex(index int) *Vertex {
 		}
 
 		if currentNode.Index == index {
-			return currentNode
+			return currentNode, visited
 		}
 
 		for _, sibling := range currentNode.Siblings {
@@ -60,5 +101,5 @@ func (g *Graph) FindVertex(index int) *Vertex {
 		}
 	}
 
-	return nil
+	return nil, nil
 }
