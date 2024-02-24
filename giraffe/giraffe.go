@@ -45,20 +45,26 @@ func CreateNode(g *Graph, index int, siblings []int) *Node {
 }
 
 func VisualizeNode(n *Node) {
-    fmt.Printf("%d:\n", n.index)
+    fmt.Printf("%d\n", n.index)
     for _, sibling := range n.siblings {
-        VisualizeNodeSiblings(sibling, "")
+        VisualizeNodeSiblings(sibling, "", true)
     }
 }
 
-func VisualizeNodeSiblings(n *Node, prefix string) {
-    fmt.Printf("%s└───%d\n", prefix, n.index)
+func VisualizeNodeSiblings(n *Node, prefix string, directChild bool) {
+    if !directChild {
+        fmt.Printf("%s└───%d\n", prefix, n.index)
+    }  else {
+        fmt.Printf("└───%d\n", n.index)
 
-    for i, sibling := range n.siblings {
-        if i == len(n.siblings)-1 {
-            VisualizeNodeSiblings(sibling, prefix)
-        } else {
-            VisualizeNodeSiblings(sibling, prefix+"    ")
+    }
+
+
+    for _, sibling := range n.siblings {
+        if directChild {
+            VisualizeNodeSiblings(sibling, prefix+"    ", false)
+            continue
         }
+        VisualizeNodeSiblings(sibling, prefix+"|   ", false)
     }
 }

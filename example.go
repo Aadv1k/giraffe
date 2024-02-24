@@ -1,17 +1,8 @@
-# Giraffe 🦒 
+package main
 
-experimental graphing library in go
-
-## Usage
-
-```shell
-go run .
-```
-
-## Example
-
-```go
-// ...
+import (
+    "github.com/aadv1k/giraffe/giraffe"
+)
 
 func main() {
     var g giraffe.Graph
@@ -26,22 +17,3 @@ func main() {
 
     giraffe.VisualizeNode(giraffe.FindNode(g, 0))
 }
-```
-
-```
-0
-└───1
-    └───2
-    |   └───3
-    |   |   └───4
-    |   |   └───5
-    |   └───4
-    └───3
-    |   └───4
-    |   └───5
-└───2
-    └───3
-    |   └───4
-    |   └───5
-    └───4
-```
