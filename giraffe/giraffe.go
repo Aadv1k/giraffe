@@ -1,5 +1,9 @@
 package giraffe
 
+import (
+	// "log"
+)
+
 type Vertex struct {
 	Index    int
 	Siblings []*Vertex
@@ -15,8 +19,24 @@ type Graph struct {
 	Edges    []*Edge
 }
 
+
+// TODO: add edges to neighbours, and vice-versa
+// TODO: opt for AddSibling, and making Sibling field private
+// TODO: check for possible clashing
+// TODO: make sure bi-directional edges are not possible
 func (g *Graph) AddEdge(e *Edge) {
 	g.Edges = append(g.Edges, e)
+
+	for _, vtx := range g.Vertices {
+
+		if e.Start.Index == vtx.Index {
+			vtx.Siblings = append(vtx.Siblings, e.End)
+		}
+
+		if e.End.Index == vtx.Index {
+			vtx.Siblings = append(vtx.Siblings, e.Start)
+		}
+	}
 }
 
 func (g *Graph) AddVertex(v *Vertex) {
@@ -69,7 +89,7 @@ func (g *Graph) FindVertexDFS(index int) (*Vertex, []*Vertex) {
 }
 
 // Do a Breadth-First Search to find the vertex
-func (g *Graph) FindVertex(index int) [*Vertex, []*Vertex] {
+func (g *Graph) FindVertex(index int) (*Vertex, []*Vertex) {
 	var queue []*Vertex
 	var visited []*Vertex
 
@@ -91,6 +111,8 @@ func (g *Graph) FindVertex(index int) [*Vertex, []*Vertex] {
 		if nodeIsVisited {
 			break
 		}
+
+		visited = append(visited, currentNode)
 
 		if currentNode.Index == index {
 			return currentNode, visited
