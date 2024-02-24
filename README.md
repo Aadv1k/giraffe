@@ -5,43 +5,38 @@ experimental graphing library in go
 ## Usage
 
 ```shell
-go run .
+go run example.go
 ```
 
 ## Example
 
+> from [`example.go`](./example.go)
+
 ```go
-// ...
+package main
+
+import (
+    "github.com/aadv1k/giraffe/giraffe"
+    "fmt" 
+)
 
 func main() {
     var g giraffe.Graph
 
+    v0 := &giraffe.Vertex{Index: 0, Siblings: []*giraffe.Vertex{}}
+    v1 := &giraffe.Vertex{Index: 1, Siblings: []*giraffe.Vertex{v0}}
 
-    giraffe.CreateNode(&g, 5, []int{})                    // Node 5
-    giraffe.CreateNode(&g, 4, []int{})                    // Node 4
-    giraffe.CreateNode(&g, 3, []int{4, 5})                // Node 3 connected to Node 4 and Node 5
-    giraffe.CreateNode(&g, 2, []int{3, 4})                // Node 2 connected to Node 3 and Node 4
-    giraffe.CreateNode(&g, 1, []int{2, 3})                // Node 1 connected to Node 2 and Node 3
-    giraffe.CreateNode(&g, 0, []int{1, 2})                // Node 0 connected to Node 1 and Node 2
+    g.AddVertex(v0)
+    g.AddVertex(v1)
 
-    giraffe.VisualizeNode(giraffe.FindNode(g, 0))
+    fmt.Println("Vertices:")
+    for _, v := range g.Vertices {
+        fmt.Println("\tVertex:", v.Index)
+    }
+
+    fmt.Println("Edges:")
+    for _, e := range g.Edges {
+        fmt.Printf("\tEdge: %d -> %d\n", e.Start.Index, e.End.Index)
+    }
 }
-```
-
-```
-0
-└───1
-    └───2
-    |   └───3
-    |   |   └───4
-    |   |   └───5
-    |   └───4
-    └───3
-    |   └───4
-    |   └───5
-└───2
-    └───3
-    |   └───4
-    |   └───5
-    └───4
 ```
