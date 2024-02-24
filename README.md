@@ -4,39 +4,35 @@ experimental graphing library in go
 
 ## Usage
 
+> The public API doesn't really exist as of now as a lot of the base stuff is being re-built every
+> commit, consider running the tests or [taking the look at the source](./giraffe/giraffe.go)
+
 ```shell
-go run example.go
+go test .\giraffe\
 ```
 
 ## Example
 
-> from [`example.go`](./example.go)
-
 ```go
-package main
-
-import (
-    "github.com/aadv1k/giraffe/giraffe"
-    "fmt" 
-)
-
 func main() {
     var g giraffe.Graph
 
-    v0 := &giraffe.Vertex{Index: 0, Siblings: []*giraffe.Vertex{}}
-    v1 := &giraffe.Vertex{Index: 1, Siblings: []*giraffe.Vertex{v0}}
+    v0 := &giraffe.Vertex{Index: 0}
+    v1 := &giraffe.Vertex{Index: 1}
 
     g.AddVertex(v0)
     g.AddVertex(v1)
 
-    fmt.Println("Vertices:")
-    for _, v := range g.Vertices {
-        fmt.Println("\tVertex:", v.Index)
-    }
+    g.AddEdge(&giraffe.Edge{Start: v0, End: v1})
+    
+    found, visited := g.FindEdge(v1)
 
-    fmt.Println("Edges:")
-    for _, e := range g.Edges {
-        fmt.Printf("\tEdge: %d -> %d\n", e.Start.Index, e.End.Index)
+    fmt.Printf("Found: %d\n")
+
+    fmt.Print("Visited: {")
+    for _, vtx := range visited {
+      fmt.Printf("%d, ", vtx.Index)
     }
+    fmt.Println("}")
 }
 ```
