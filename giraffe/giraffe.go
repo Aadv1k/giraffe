@@ -19,7 +19,6 @@ type Graph struct {
 	Edges    []*Edge
 }
 
-
 // TODO: add edges to neighbours, and vice-versa
 // TODO: opt for AddSibling, and making Sibling field private
 // TODO: check for possible clashing
@@ -28,7 +27,6 @@ func (g *Graph) AddEdge(e *Edge) {
 	g.Edges = append(g.Edges, e)
 
 	for _, vtx := range g.Vertices {
-
 		if e.Start.Index == vtx.Index {
 			vtx.Siblings = append(vtx.Siblings, e.End)
 		}
@@ -38,6 +36,29 @@ func (g *Graph) AddEdge(e *Edge) {
 		}
 	}
 }
+
+// Do a selection sort
+func (v *Vertex) SortSiblings() {
+    n := len(v.Siblings)
+    if n <= 1 {
+        return
+    }
+
+    for i := 0; i < n-1; i++ {
+        minIndex := i
+        for j := i + 1; j < n; j++ {
+            if v.Siblings[j].Index < v.Siblings[minIndex].Index {
+                minIndex = j
+            }
+        }
+
+        if i != minIndex {
+            v.Siblings[i], v.Siblings[minIndex] = v.Siblings[minIndex], v.Siblings[i]
+        }
+    }
+}
+
+
 
 func (g *Graph) AddVertex(v *Vertex) {
 	g.Vertices = append(g.Vertices, v)
@@ -59,6 +80,16 @@ func PopLast[K any](arr[]K) K {
 	return elem
 }
 
+func HasVisited(visited []*Vertex, vtx *Vertex) bool {
+		for _, visitedVtx := range visited {
+			if visitedVtx.Index == vtx.Index {
+				return true
+			}
+		}
+
+		return false
+}
+
 // Do a Depth-First Search to find the vertex
 func (g *Graph) FindVertexDFS(index int) (*Vertex, []*Vertex) {
 	var stack []*Vertex
@@ -66,18 +97,19 @@ func (g *Graph) FindVertexDFS(index int) (*Vertex, []*Vertex) {
 
 	stack = append(stack, g.Vertices[0])
 
-	for vtx := PopLast(stack); vtx != nil; {
-		nodeIsVisited := false
-		for _, visitedVtx := range visited {
-			if visitedVtx.Index == vtx.Index {
-				nodeIsVisited = true
-				break
-			}
+	for len(stack) != 0 {
+		vtx := PopLast(stack)
+
+		if HasVisited(visited, vtx) {
+			continue;
 		}
 
-		if nodeIsVisited { continue }
+		for _, sib := range vtx.Siblings {
+				if !HasVisited(visited, sib) {
+						stack = append(stack, sib)
+				}
+		}
 
-		stack = append(stack, vtx.Siblings...)
 		visited = append(visited, vtx)
 
 		if index == vtx.Index {

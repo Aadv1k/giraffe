@@ -4,7 +4,7 @@ import (
     "testing"
 )
 
-func TestFindVertex(t *testing.T) {
+func MakeTestGraph() *Graph {
     var g Graph
 
     v0 := &Vertex{ Index: 0}
@@ -17,11 +17,22 @@ func TestFindVertex(t *testing.T) {
     g.AddVertex(v2)
     g.AddVertex(v3)
 
-    g.AddEdge(&Edge{Start: v0, End: v1})
-    g.AddEdge(&Edge{Start: v0, End: v2})
+
     g.AddEdge(&Edge{Start: v0, End: v3})
-    g.AddEdge(&Edge{Start: v2, End: v3})
+    g.AddEdge(&Edge{Start: v0, End: v2})
+    g.AddEdge(&Edge{Start: v0, End: v1})
+
+		v0.SortSiblings()
+
     g.AddEdge(&Edge{Start: v2, End: v1})
+    g.AddEdge(&Edge{Start: v2, End: v3})
+
+		v2.SortSiblings()
+		return &g
+}
+
+func TestFindVertex(t *testing.T) {
+		g := MakeTestGraph()
 
     found, visited := g.FindVertex(3)
 
@@ -44,7 +55,26 @@ func TestFindVertex(t *testing.T) {
 }
 
 func TestFindVertexDFS(t *testing.T) {
-    t.Skip("TestFindVertexDFS goes here")
+		g := MakeTestGraph()
+
+    found, visited := g.FindVertexDFS(2)
+
+    if found == nil {
+        t.Errorf("Expected to find vertex with index 2, but found nil")
+    }
+		
+		const nodes_to_visit int = 3
+
+    if len(visited) != nodes_to_visit {
+        t.Errorf("Expected %d visited vertices, but got %d", nodes_to_visit, len(visited))
+    }
+
+    expectedIndices := map[int]bool{0: true, 3: true, 2: true}
+    for _, vtx := range visited {
+        if !expectedIndices[vtx.Index] {
+            t.Errorf("Unexpected visited vertex index: %d", vtx.Index)
+        }
+    }
 }
 
 func TestAddVertex(t *testing.T) {
