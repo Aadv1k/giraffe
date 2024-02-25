@@ -2,6 +2,7 @@ package giraffe
 
 import (
 	// "log"
+	"fmt"
 )
 
 type Vertex struct {
@@ -19,11 +20,17 @@ type Graph struct {
 	Edges    []*Edge
 }
 
-// TODO: add edges to neighbours, and vice-versa
-// TODO: opt for AddSibling, and making Sibling field private
-// TODO: check for possible clashing
-// TODO: make sure bi-directional edges are not possible
-func (g *Graph) AddEdge(e *Edge) {
+func (g *Graph) AddEdge(e *Edge) error {
+	if e.Start == e.End {
+		return fmt.Errorf("Cyclic nodes not allowed.")
+	}
+
+	for _, edg := range g.Edges {
+		if (edg.Start == e.Start && edg.End == e.End) || (edg.End == e.Start && edg.Start == e.End) {
+			return fmt.Errorf("An edge with the exact relation {%d} -> {%d} already exists.", e.Start.Index, e.End.Index)
+		}
+	}
+
 	g.Edges = append(g.Edges, e)
 
 	for _, vtx := range g.Vertices {
@@ -35,37 +42,45 @@ func (g *Graph) AddEdge(e *Edge) {
 			vtx.Siblings = append(vtx.Siblings, e.Start)
 		}
 	}
+
+	return nil
 }
 
-// Do a selection sort
+//func (g *Vertex) KMeanCluster(k int) {
+	//return nil
+//}
+
+// Uses Selection sort to order the siblings
 func (v *Vertex) SortSiblings() {
-    n := len(v.Siblings)
-    if n <= 1 {
-        return
-    }
+	for i := 0; i < len(v.Siblings) - 1; i += 1 {
+		minIndex := i
 
-    for i := 0; i < n-1; i++ {
-        minIndex := i
-        for j := i + 1; j < n; j++ {
-            if v.Siblings[j].Index < v.Siblings[minIndex].Index {
-                minIndex = j
-            }
-        }
+		for j := i + 1; j < len(v.Siblings); j+=1 {
+			if v.Siblings[j].Index < v.Siblings[minIndex].Index {
+				minIndex = j
+			}
+		}
 
-        if i != minIndex {
-            v.Siblings[i], v.Siblings[minIndex] = v.Siblings[minIndex], v.Siblings[i]
-        }
-    }
+		if minIndex != i {
+				v.Siblings[minIndex], v.Siblings[i] = v.Siblings[i], v.Siblings[minIndex]
+		}
+	}
 }
 
+func (g *Graph) AddVertex(v *Vertex) error {
+	_, vtx := g.FindVertex(v.Index)
 
+	if vtx != nil {
+		return fmt.Errorf("A vertex with that index %d already exists.", v.Index)
+	}
 
-func (g *Graph) AddVertex(v *Vertex) {
 	g.Vertices = append(g.Vertices, v)
 
 	for _, sibling := range v.Siblings {
 		g.Edges = append(g.Edges, &Edge{v, sibling})
 	}
+
+	return nil  
 }
 
 func PopLast[K any](arr[]K) K {
@@ -92,6 +107,10 @@ func HasVisited(visited []*Vertex, vtx *Vertex) bool {
 
 // Do a Depth-First Search to find the vertex
 func (g *Graph) FindVertexDFS(index int) (*Vertex, []*Vertex) {
+	if len(g.Vertices) <= 1 {
+		return nil, nil
+	}
+
 	var stack []*Vertex
 	var visited []*Vertex
 
@@ -122,6 +141,10 @@ func (g *Graph) FindVertexDFS(index int) (*Vertex, []*Vertex) {
 
 // Do a Breadth-First Search to find the vertex
 func (g *Graph) FindVertex(index int) (*Vertex, []*Vertex) {
+	if len(g.Vertices) == 0 {
+		return nil, nil
+	}
+
 	var queue []*Vertex
 	var visited []*Vertex
 
