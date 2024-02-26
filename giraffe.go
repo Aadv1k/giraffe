@@ -46,9 +46,9 @@ func (g *Graph) AddEdge(e *Edge) error {
 	return nil
 }
 
-//func (g *Vertex) KMeanCluster(k int) {
-	//return nil
-//}
+// Apply K-Means Cluster using degree as the centrality metric for the feature
+func (g *Vertex) KMeansCluster(k int, centrality int) {
+}
 
 // Uses Selection sort to order the siblings
 func (v *Vertex) SortSiblings() {

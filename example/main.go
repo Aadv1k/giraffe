@@ -1,27 +1,10 @@
-# Giraffe 🦒 
+package main
 
-experimental graphing library in go
+import (
+	"github.com/aadv1k/giraffe"
+	"fmt"
+)
 
-## Usage
-
-> The public API doesn't really exist as of now as a lot of the base stuff is being re-built every
-> commit, consider running the tests or [taking the look at the source](./giraffe/giraffe.go)
-
-```shell
-go test .\giraffe\
-```
-
-or run the example
-
-```
-go run .\example
-```
-
-## Example
-
-> Taken from [./examples/main.go](./examples/main.go)
-
-```go
 func main() {
     var g giraffe.Graph
 
@@ -48,4 +31,3 @@ func main() {
       fmt.Printf("%d, ", vtx.Index)
     }
 }
-```
