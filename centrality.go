@@ -1,7 +1,6 @@
 package giraffe
 
 import (
-	"log"
 	"math"
 )
 
