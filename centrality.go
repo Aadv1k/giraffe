@@ -1,5 +1,10 @@
 package giraffe
 
+import (
+	"log"
+	"math"
+)
+
 func (g *Graph) GetDegree() []int {
 	if len(g.Vertices) == 0 {
 		return nil
@@ -44,12 +49,13 @@ func (g *Graph) FindNodeBFS(start, end int) (*Vertex, []*Vertex) {
 			continue
 		}
 
-		if cur.Index == endVertex.Index {
-			return cur, visitedVertices
-		}
 
 		visited[cur.Index] = true
 		visitedVertices = append(visitedVertices, cur)
+
+		if cur.Index == endVertex.Index {
+			return cur, visitedVertices
+		}
 
 		// Enqueue
 		queue = append(queue, cur.Siblings...)
@@ -58,31 +64,41 @@ func (g *Graph) FindNodeBFS(start, end int) (*Vertex, []*Vertex) {
 	return nil, visitedVertices
 }
 
+func (g *Graph) GetVertexBetweeness(v *Vertex) float64 {
+	vShortestRoute := 0
+
+	for i, vtx := range g.Vertices {
+		// Skip the current vertex
+		if v == vtx { continue }
+
+		for j := i; j < len(g.Vertices); j++ {
+
+			// Skip the current vertex
+			if v == g.Vertices[j]  { continue }
+
+			_, visitedVertices := g.FindNodeBFS(vtx.Index, g.Vertices[j].Index)
+
+			for _, visitedVtx := range visitedVertices {
+
+				// Check if it was involved in the shortest path
+				if v == visitedVtx {
+					vShortestRoute++
+					break
+				}
+			}
+		}
+	}
+
+	betweeness := math.Round(float64(vShortestRoute) / float64(len(g.Vertices)))
+	return betweeness
+}
+
 func (g *Graph) GetBetweenness() []float64 {
-    betweenness := make([]float64, len(g.Vertices))
+	betweenness := make([]float64, len(g.Vertices))
 
-    for _, vtx := range g.Vertices {
-        for _, vtx2 := range g.Vertices {
-            if vtx.Index == vtx2.Index {
-                continue
-            }
-            _, visitedVertices := g.FindNodeBFS(vtx.Index, vtx2.Index)
-            found := false
-            for _, v := range visitedVertices {
-                if v.Index == vtx.Index {
-                    found = true
-                    break
-                }
-            }
-            if found {
-                betweenness[vtx.Index]++
-            }
-        }
-    }
+	for i, vtx := range g.Vertices {
+		betweenness[i] = g.GetVertexBetweeness(vtx)
+	}
 
-    for i := range betweenness {
-        betweenness[i] /= float64(len(g.Vertices) - 1)
-    }
-
-    return betweenness
+	return betweenness
 }

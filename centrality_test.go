@@ -2,10 +2,8 @@ package giraffe
 
 import (
 	"testing"
-	"log"
 	"math"
 )
-
 
 /*
       0
@@ -61,7 +59,7 @@ func TestBetweeness(t *testing.T) {
 	g := MakePyramidGraph()
 	bet := g.GetBetweenness()
 
-	totalVertices := len(g.Vertices) - 1
+	totalVertices := len(g.Vertices)
 	sumOfBetweenness := 0.0
 
 	for _, elem := range bet {
