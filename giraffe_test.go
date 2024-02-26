@@ -47,10 +47,10 @@ func TestAddEdge(t *testing.T) {
 func MakeTestGraph() *Graph {
     var g Graph
 
-    v0 := &Vertex{ Index: 0}
-    v1 := &Vertex{ Index: 1}
-    v2 := &Vertex{ Index: 2}
-    v3 := &Vertex{ Index: 3}
+    v0 := &Vertex{ Index: 0 }
+    v1 := &Vertex{ Index: 1 }
+    v2 := &Vertex{ Index: 2 }
+    v3 := &Vertex{ Index: 3 }
 
     g.AddVertex(v0)
     g.AddVertex(v1)

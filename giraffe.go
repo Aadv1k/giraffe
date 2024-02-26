@@ -23,6 +23,11 @@ type Graph struct {
 
 // Iteratively return first vertex with matched index
 func (g *Graph) GetVertex(index int) *Vertex {
+
+	if len(g.Vertices) == 0 {
+		return nil
+	}
+
 	for _, vtx := range g.Vertices {
 		if vtx.Index == index {
 			return vtx
@@ -80,7 +85,7 @@ func (v *Vertex) SortSiblings() {
 }
 
 func (g *Graph) AddVertex(v *Vertex) error {
-	_, vtx := g.FindVertex(v.Index)
+	vtx := g.GetVertex(v.Index)
 
 	if vtx != nil {
 		return fmt.Errorf("A vertex with that index %d already exists.", v.Index)
