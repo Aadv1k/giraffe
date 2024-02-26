@@ -38,6 +38,10 @@ func (g *Graph) GetVertex(index int) *Vertex {
 }
 
 func (g *Graph) AddEdge(e *Edge) error {
+	if e.Start == nil || e.End == nil {
+		panic("AddEdge: Unexpected edge start or end node was nil")
+	}
+
 	if e.Start == e.End {
 		return fmt.Errorf("Cyclic nodes not allowed.")
 	}
