@@ -3,6 +3,7 @@ package giraffe
 import (
 	"testing"
 	"log"
+	"math"
 )
 
 
@@ -57,5 +58,19 @@ func TestDegree(t *testing.T) {
 }
 
 func TestBetweeness(t *testing.T) {
-	t.Skip()
+	g := MakePyramidGraph()
+	bet := g.GetBetweenness()
+
+	totalVertices := len(g.Vertices) - 1
+	sumOfBetweenness := 0.0
+
+	for _, elem := range bet {
+		sumOfBetweenness += elem
+	}
+
+	tolerance := 1e-6
+
+	if math.Abs(float64(totalVertices)-sumOfBetweenness) > tolerance {
+		t.Errorf("Expected the total sum of all centralities to be equal to %d but got %.2f", totalVertices, sumOfBetweenness)
+	}
 }

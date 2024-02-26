@@ -1,9 +1,5 @@
 package giraffe
 
-import (
-	"assert"
-)
-
 func (g *Graph) GetDegree() []int {
 	if len(g.Vertices) == 0 {
 		return nil
@@ -29,10 +25,11 @@ func (g *Graph) FindNodeBFS(start, end int) (*Vertex, []*Vertex) {
 	visited := make(map[int]bool)
 	var visitedVertices []*Vertex
 
-	startVertex, endVertex := g.FindVertex(start), g.FindVertex(end)
+	startVertex, endVertex := g.GetVertex(start), g.GetVertex(end)
 
-	assert.NotNil(startVertex)
-	assert.NotNil(endVertex)
+	if startVertex == nil || endVertex == nil {
+		return nil, nil
+	}
 
 	queue = append(queue, startVertex)
 
