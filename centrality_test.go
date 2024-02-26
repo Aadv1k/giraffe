@@ -2,6 +2,7 @@ package giraffe
 
 import (
 	"testing"
+	"log"
 )
 
 
@@ -46,9 +47,8 @@ func TestDegree(t *testing.T) {
 		return
 	}
 
-	node := 2
-
-	degOfVertex := deg[node - 1]
+	node := 5
+	degOfVertex := deg[node]
 	expectedDeg := 2
 
 	if degOfVertex != expectedDeg {
