@@ -20,6 +20,18 @@ type Graph struct {
 	Edges    []*Edge
 }
 
+
+// Iteratively return first vertex with matched index
+func (g *Graph) GetVertex(index int) *Vertex {
+	for _, vtx := range g.Vertices {
+		if vtx.Index == index {
+			return vtx
+		}
+	}
+
+	return nil
+}
+
 func (g *Graph) AddEdge(e *Edge) error {
 	if e.Start == e.End {
 		return fmt.Errorf("Cyclic nodes not allowed.")
