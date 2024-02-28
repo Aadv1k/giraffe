@@ -2,7 +2,7 @@
 
 Experimental graphing library in go
 
-a list of what is implemented so far (these are not USPs, but simply a visual tracker for the features)
+a list of what is implemented so far :-
 
 - Search
     - Breadth-First
@@ -10,11 +10,15 @@ a list of what is implemented so far (these are not USPs, but simply a visual tr
 - Sorting (Siblings, Nodes)
     - Selection Sort 
     - **TBD**
-- Centrality (based on)
+- Centrality
     - Degree
     - Betweenness
 - Clustering
-    - **TBD**
+    - K-Means
+    
+> [!NOTE]
+> I haven't used this library for serious experimentations with actual graph data. A lot of this is
+> purely through intuition, eg - this is how it's supposed to work if I understand it correctly.
 
 ## Usage
 
