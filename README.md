@@ -8,13 +8,12 @@ a list of what is implemented so far :-
     - Breadth-First
     - Depth-First
 - Sorting (Siblings, Nodes)
-    - Selection Sort 
-    - **TBD**
 - Centrality
     - Degree
     - Betweenness
 - Clustering
     - K-Means
+- Export to [Mermaid](https://mermaid.js.org/)
     
 > [!NOTE]
 > I haven't used this library for serious experimentations with actual graph data. A lot of this is
@@ -29,6 +28,7 @@ package main
 
 import (
     "github.com/aadv1k/giraffe"
+    "fmt"
 )
 
 func main() {
@@ -38,16 +38,21 @@ func main() {
     g.AddVertex(&giraffe.Vertex{ Index: 1 })
     g.AddVertex(&giraffe.Vertex{ Index: 2 })
 
-    g.AddEdge(&giraffe.Edge{Start: g.GetVertex(0), End: g.GetVertex(1)}})
-    g.AddEdge(&giraffe.Edge{Start: g.GetVertex(1), End: g.GetVertex(2)}})
-    g.AddEdge(&giraffe.Edge{Start: g.GetVertex(2), End: g.GetVertex(0)}})
+    g.AddEdge(&giraffe.Edge{Start: g.GetVertex(0), End: g.GetVertex(1)})
+    g.AddEdge(&giraffe.Edge{Start: g.GetVertex(1), End: g.GetVertex(2)})
+    g.AddEdge(&giraffe.Edge{Start: g.GetVertex(2), End: g.GetVertex(0)})
+    
+    fmt.Print(g.ParseToMermaid())
 }
 ```
 
 ```mermaid
 graph TD;
-    0(0) --> 1(1);
-    1 --> 2(2);
+    0;
+    1;
+    2;
+    0 --> 1;
+    1 --> 2;
     2 --> 0;
 ```
 
@@ -95,4 +100,20 @@ func main() {
       fmt.Printf("%d, ", vtx.Index)
     }
 }
+
+```
+
+```
+Found: 1
+Visited: { 0, 1 }
+```
+
+Additionally, you can also do the same using DFS search
+
+```go
+    // ... 
+
+    found, visited := g.FindVertexDFS(1)
+
+    // ...
 ```
