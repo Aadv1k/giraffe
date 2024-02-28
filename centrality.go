@@ -12,16 +12,20 @@ func (g *Graph) GetDegree() []int {
 	res := make([]int, len(g.Vertices))
 
 	for _, v := range g.Vertices {
-		count := 0 
-		for _, e := range g.Edges {
-				if e.End.Index == v.Index {
-						count ++ 
-				}
-		}
-		res[v.Index] = count
+		res[v.Index] = g.GetVertexDegree(v)
 	}
 
 	return res
+}
+
+func (g *Graph) GetVertexDegree(v *Vertex) int {
+	count := 0 
+	for _, e := range g.Edges {
+		if e.End.Index == v.Index {
+			count++ 
+		}
+	}
+	return count
 }
 
 func (g *Graph) FindNodeBFS(start, end int) (*Vertex, []*Vertex) {
@@ -63,7 +67,7 @@ func (g *Graph) FindNodeBFS(start, end int) (*Vertex, []*Vertex) {
 	return nil, visitedVertices
 }
 
-func (g *Graph) GetVertexBetweeness(v *Vertex) float64 {
+func (g *Graph) GetVertexBetweenness(v *Vertex) float64 {
 	vShortestRoute := 0
 
 	for i, vtx := range g.Vertices {
@@ -96,7 +100,7 @@ func (g *Graph) GetBetweenness() []float64 {
 	betweenness := make([]float64, len(g.Vertices))
 
 	for i, vtx := range g.Vertices {
-		betweenness[i] = g.GetVertexBetweeness(vtx)
+		betweenness[i] = g.GetVertexBetweenness(vtx)
 	}
 
 	return betweenness
