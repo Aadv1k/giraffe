@@ -27,6 +27,21 @@ func MakeClusterGraph() *Graph {
 	return &g
 }
 
+func ShouldBeIn(t *testing.T, v *Vertex, cluster []KClusterChild) {
+    found := false
+
+		for _, elem := range cluster {
+			if elem.Vertex == v {
+				found = true
+			}
+		}
+
+    if !found {
+        t.Errorf("Expected vertex %d to be in the cluster.", v.Index)
+    }
+}
+
+
 func TestKMeansClustering(t *testing.T)  {
 	g := MakeClusterGraph()
 
@@ -43,19 +58,11 @@ func TestKMeansClustering(t *testing.T)  {
 		return
 	}
 
+	ShouldBeIn(t, g.GetVertex(0), clusters[0])
+	ShouldBeIn(t, g.GetVertex(1), clusters[0])
+	ShouldBeIn(t, g.GetVertex(2), clusters[0])
 
-	firstIndex := 0
 
-	vtx := g.GetVertex(firstIndex)
-
-	found := false
-	for _, child := range clusters[0] {
-		if child.Vertex == vtx {
-			found = true
-		}
-	}
-
-	if !found {
-		t.Errorf("Expected %d to be in cluster %d, but didn't find.", vtx.Index, firstIndex)
-	}
+	ShouldBeIn(t, g.GetVertex(3), clusters[1])
+	ShouldBeIn(t, g.GetVertex(4), clusters[1])
 }

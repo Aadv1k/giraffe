@@ -8,3 +8,4 @@ func UtilFindByRef[T comparable](elem *T, arr []*T) (*T, int) {
     }
     return nil, -1
 }
+

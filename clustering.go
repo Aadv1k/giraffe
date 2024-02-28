@@ -3,6 +3,7 @@ package giraffe
 import (
 	"math/rand"
 	"math"
+	"log"
 )
 
 type KVec2d struct {
@@ -69,6 +70,9 @@ func (g *Graph) KMeansClustering(k int) (KCluster, KMean) {
 
 		means[i] /= float64(len(cluster))
 	}
+
+	log.Printf("Cluster 0: %d", len(clusters[0]))
+	log.Printf("Cluster 1: %d", len(clusters[1]))
 
 	return clusters, means
 }
