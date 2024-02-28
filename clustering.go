@@ -3,7 +3,6 @@ package giraffe
 import (
 	"math/rand"
 	"math"
-	"log"
 )
 
 type KVec2d struct {
@@ -24,55 +23,54 @@ func KVec2d_Euclidean_Distance(v1, v2 KVec2d) float64 {
 }
 
 func (g *Graph) KMeansClustering(k int) (KCluster, KMean) {
-	points := make([]KVec2d, len(g.Vertices))
+    points := make([]KVec2d, len(g.Vertices))
 
-	lim := KVec2d{}
+    lim := KVec2d{x: math.MinInt32, y: math.Inf(-1)}
 
-	for i, vtx := range g.Vertices {
-		deg, bet := g.GetVertexDegree(vtx), g.GetVertexBetweenness(vtx)
-		points[i] = KVec2d{x: deg, y: bet}
+    for i, vtx := range g.Vertices {
+        deg, bet := g.GetVertexDegree(vtx), g.GetVertexBetweenness(vtx)
+        points[i] = KVec2d{x: deg, y: bet}
 
-		// Define the upper limit for points 
-		if deg > lim.x { lim.x = deg }
-		if bet > lim.y { lim.y = bet }
-	}
+        if deg > lim.x {
+            lim.x = deg
+        }
+        if bet > lim.y {
+            lim.y = bet
+        }
+    }
 
-	// Initialize random "K" points within the 2D space
-	kPoints := make([]KVec2d, k)
-	for _, point := range kPoints {
-		point.x = rand.Intn(lim.x)
-		point.y = rand.Float64() * lim.y
-	}
+    kPoints := make([]KVec2d, k)
+    for i := range kPoints {
+        kPoints[i] = KVec2d{
+            x: rand.Intn(lim.x + 1),
+            y: rand.Float64() * lim.y,
+        }
+    }
 
-	clusters := make(KCluster, k)
+    clusters := make(KCluster, k)
 
-	for i, point := range points {
-		min := 0.0
-		minIndex := 0
+    for i, point := range points {
+        min := math.Inf(1)
+        minIndex := 0
 
-		for j := 0; j < k; j++ {
-			d := KVec2d_Euclidean_Distance(point, kPoints[j])
-			if d < min {
-				d = min
-				minIndex = j
-			}
-		}
-		clusters[minIndex] = append(clusters[minIndex], KClusterChild{Vertex: g.Vertices[i], Distance: min})
-	}
+        for j, kPoint := range kPoints {
+            d := KVec2d_Euclidean_Distance(point, kPoint)
+            if d < min {
+                min = d
+                minIndex = j
+            }
+        }
+        clusters[minIndex] = append(clusters[minIndex], KClusterChild{Vertex: g.Vertices[i], Distance: min})
+    }
 
-	means := make([]float64, k)
+    means := make(KMean, k)
 
+    for i, cluster := range clusters {
+        for _, child := range cluster {
+            means[i] += child.Distance
+        }
+        means[i] /= float64(len(cluster))
+    }
 
-	for i, cluster := range clusters {
-		for _, child := range cluster {
-			means[i] += child.Distance
-		}
-
-		means[i] /= float64(len(cluster))
-	}
-
-	log.Printf("Cluster 0: %d", len(clusters[0]))
-	log.Printf("Cluster 1: %d", len(clusters[1]))
-
-	return clusters, means
+    return clusters, means
 }

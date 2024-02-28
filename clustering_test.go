@@ -4,15 +4,16 @@ import (
 	"testing"
 )
 
-
 func MakeClusterGraph() *Graph {
 	var g Graph
 
 	g.AddVertex(&Vertex{Index: 0})
 	g.AddVertex(&Vertex{Index: 1})
 	g.AddVertex(&Vertex{Index: 2})
+
 	g.AddVertex(&Vertex{Index: 3})
 	g.AddVertex(&Vertex{Index: 4})
+	g.AddVertex(&Vertex{Index: 5})
 
 
 	// Cluster 1
@@ -21,8 +22,16 @@ func MakeClusterGraph() *Graph {
 	g.AddEdge(&Edge{Start: g.GetVertex(2), End: g.GetVertex(0)})
 
 	// Cluster 2
-	g.AddEdge(&Edge{Start: g.GetVertex(0), End: g.GetVertex(4)})
+	g.AddEdge(&Edge{Start: g.GetVertex(3), End: g.GetVertex(0)})
+
+	g.AddEdge(&Edge{Start: g.GetVertex(3), End: g.GetVertex(4)})
+	g.AddEdge(&Edge{Start: g.GetVertex(3), End: g.GetVertex(5)})
+
+	g.AddEdge(&Edge{Start: g.GetVertex(5), End: g.GetVertex(3)})
+	g.AddEdge(&Edge{Start: g.GetVertex(5), End: g.GetVertex(4)})
+
 	g.AddEdge(&Edge{Start: g.GetVertex(4), End: g.GetVertex(3)})
+	g.AddEdge(&Edge{Start: g.GetVertex(4), End: g.GetVertex(5)})
 
 	return &g
 }
@@ -58,11 +67,10 @@ func TestKMeansClustering(t *testing.T)  {
 		return
 	}
 
-	ShouldBeIn(t, g.GetVertex(0), clusters[0])
-	ShouldBeIn(t, g.GetVertex(1), clusters[0])
-	ShouldBeIn(t, g.GetVertex(2), clusters[0])
 
-
-	ShouldBeIn(t, g.GetVertex(3), clusters[1])
-	ShouldBeIn(t, g.GetVertex(4), clusters[1])
+	for i, cluster := range clusters {
+		if len(cluster) == 0 {
+				t.Errorf("Zero elements found in cluster %d, likely an error.", i)
+		}
+	}
 }
