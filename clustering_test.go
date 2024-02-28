@@ -31,7 +31,7 @@ func TestKMeansClustering(t *testing.T)  {
 	g := MakeClusterGraph()
 
 	K := 2
-	clusters := g.KMeansClustering(2)
+	clusters, _ := g.KMeansClustering(K)
 
 	if clusters == nil {
 		t.Errorf("Expected 2D Array of clusters, got nil")
@@ -49,8 +49,8 @@ func TestKMeansClustering(t *testing.T)  {
 	vtx := g.GetVertex(firstIndex)
 
 	found := false
-	for _, v := range clusters[0] {
-		if v == vtx {
+	for _, child := range clusters[0] {
+		if child.Vertex == vtx {
 			found = true
 		}
 	}
@@ -58,5 +58,4 @@ func TestKMeansClustering(t *testing.T)  {
 	if !found {
 		t.Errorf("Expected %d to be in cluster %d, but didn't find.", vtx.Index, firstIndex)
 	}
-
 }
