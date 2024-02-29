@@ -2,7 +2,6 @@ package giraffe
 
 import (
     "testing"
-		"fmt"
 )
 
 func TestParseToMermaid(t *testing.T) {

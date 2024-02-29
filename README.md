@@ -2,7 +2,7 @@
 
 Experimental graphing library in go
 
-a list of what is implemented so far :-
+> a list of what is implemented so far :-
 
 - Search
     - Breadth-First
@@ -14,6 +14,12 @@ a list of what is implemented so far :-
 - Clustering
     - K-Means
 - Export to [Mermaid](https://mermaid.js.org/)
+
+- [What is a graphing library?](#What-is-a-graphing-library?)
+- [Examples](#examples)
+  - [Depth-first search](#A-Depth-first-search)
+  - [Get various centralities for the graph](#Get-various-centralities-for-the-graph)
+  - [K-Means Clustering](#k-means-clustering)
     
 > [!NOTE]
 > I haven't used this library for serious experimentations with actual graph data. A lot of this is
@@ -67,53 +73,82 @@ million vertices with amazing efficiency and speed.
 This is not such library. It is primarily built as an exploratory/research project to probe this
 paradign of computation
 
-## Example
+## Examples
 
-> Taken from [./examples/main.go](./examples/main.go)
-
-Do a Breadth-First search and print all the vertices that were visited.
+### A Depth-first search 
 
 ```go
+package main
+
+import (
+	"github.com/aadv1k/giraffe"
+)
+
 func main() {
-    var g giraffe.Graph
+	var g *giraffe.Graph
+	g = giraffe.MakePyramidGraph() // Utility function to generate a sample graph
 
-    v0 := &giraffe.Vertex{Index: 0}
-    v1 := &giraffe.Vertex{Index: 1}
+	// Visit the vertices using Depth-First Search
+	_, visited := g.FindVertexDFS(3)
 
-    g.AddVertex(v0)
-    g.AddVertex(v1)
-
-    g.AddEdge(&giraffe.Edge{Start: v0, End: v1})
-    
-    // Find the provided index using Breadth-First Search 
-    found, visited := g.FindVertex(1)
-
-    fmt.Printf("Found: %d\n", found.Index)
-
-    // Returns an array of visited vertices
-    fmt.Print("Visited: { ")
-    for i, vtx := range visited {
-			if i == len(visited) - 1 {
-				fmt.Printf("%d }\n", vtx.Index)
-				continue
-			}
-      fmt.Printf("%d, ", vtx.Index)
-    }
+	giraffe.PrintVertices(visited) // Utility function to print the vertex array
 }
-
 ```
 
 ```
-Found: 1
-Visited: { 0, 1 }
+{ 0, 2, 5, 4, 3 }
 ```
 
-Additionally, you can also do the same using DFS search
+Additionally, you can also do the same using Breadth-First Search
 
 ```go
     // ... 
 
-    found, visited := g.FindVertexDFS(1)
+    _, visited := g.FindVertexBFS(0, 3)
 
     // ...
 ```
+
+```
+{ 0, 1, 2, 3 }
+```
+
+### Get various centralities for the graph
+
+```go
+func main() {
+	var g *giraffe.Graph
+	g = giraffe.MakePyramidGraph() // Utility function to generate a sample graph
+
+	fmt.Printf("Degree: %v\n", g.GetDegree())
+	fmt.Printf("Betweenness: %v\n", g.GetBetweenness())
+}
+```
+
+```
+Degree: [0 1 1 1 1 2]
+Betweenness: [1 1 1 1 1 1]
+```
+
+### K-Means Clustering
+
+```go
+func main() {
+	var g *giraffe.Graph
+	g = giraffe.MakeClusterGraph() // Utility function to generate a sample graph
+
+	clusters, means := g.KMeansClustering(2)
+
+	fmt.Printf("%v\n", means)
+	fmt.Printf("There are %d clusters", len(clusters))
+}
+```
+
+```
+[1.472636459754717 1.0380631836067153]
+There are 2 clusters
+```
+
+and that's it for now! these functions describe the upper and lower-bound of this experimental
+library.
+
