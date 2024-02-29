@@ -74,7 +74,7 @@ func MakeTestGraph() *Graph {
 func TestFindVertex(t *testing.T) {
 		g := MakeTestGraph()
 
-    found, visited := g.FindVertex(3)
+    found, visited := g.FindVertexBFS(0, 3)
 
     if found == nil {
         t.Errorf("Expected to find vertex with index 3, but found nil")

@@ -67,10 +67,6 @@ func (g *Graph) AddEdge(e *Edge) error {
 	return nil
 }
 
-// Apply K-Means Cluster using degree as the centrality metric for the feature
-func (g *Vertex) KMeansCluster(k int, centrality int) {
-}
-
 // Uses Selection sort to order the siblings
 func (v *Vertex) SortSiblings() {
 	for i := 0; i < len(v.Siblings) - 1; i += 1 {
@@ -102,28 +98,6 @@ func (g *Graph) AddVertex(v *Vertex) error {
 	}
 
 	return nil  
-}
-
-func PopLast[K any](arr[]K) K {
-	if len(arr) == 0 {
-		return *new(K)
-	}
-
-	last := len(arr) - 1
-	elem := arr[last]
-	arr = append(arr[:last], arr[last+1:]...)
-
-	return elem
-}
-
-func HasVisited(visited []*Vertex, vtx *Vertex) bool {
-		for _, visitedVtx := range visited {
-			if visitedVtx.Index == vtx.Index {
-				return true
-			}
-		}
-
-		return false
 }
 
 // Do a Depth-First Search to find the vertex
@@ -160,44 +134,41 @@ func (g *Graph) FindVertexDFS(index int) (*Vertex, []*Vertex) {
 	return nil, nil
 }
 
-// Do a Breadth-First Search to find the vertex
-func (g *Graph) FindVertex(index int) (*Vertex, []*Vertex) {
-	if len(g.Vertices) == 0 {
+func (g *Graph) FindVertexBFS(start, end int) (*Vertex, []*Vertex) {
+	var queue []*Vertex
+	visited := make(map[int]bool)
+	var visitedVertices []*Vertex
+
+	startVertex, endVertex := g.GetVertex(start), g.GetVertex(end)
+
+	if startVertex == nil || endVertex == nil {
 		return nil, nil
 	}
 
-	var queue []*Vertex
-	var visited []*Vertex
-
-	queue = append(queue, g.Vertices[0])
+	queue = append(queue, startVertex)
 
 	for len(queue) != 0 {
-		currentNode := queue[0]
+
+		// Dequeue
+		cur := queue[0]
 		queue = queue[1:]
 
-		nodeIsVisited := false
-
-		for _, visitedVtx := range visited {
-			if visitedVtx.Index == currentNode.Index {
-				nodeIsVisited = true
-				break
-			}
+		hasVisited := visited[cur.Index]
+		if hasVisited {
+			continue
 		}
 
-		if nodeIsVisited {
-			break
+
+		visited[cur.Index] = true
+		visitedVertices = append(visitedVertices, cur)
+
+		if cur.Index == endVertex.Index {
+			return cur, visitedVertices
 		}
 
-		visited = append(visited, currentNode)
-
-		if currentNode.Index == index {
-			return currentNode, visited
-		}
-
-		for _, sibling := range currentNode.Siblings {
-			queue = append(queue, sibling)
-		}
+		// Enqueue
+		queue = append(queue, cur.Siblings...)
 	}
 
-	return nil, nil
+	return nil, visitedVertices
 }
