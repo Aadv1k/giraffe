@@ -17,7 +17,7 @@ Experimental graphing library in go
     - Export to [Mermaid](https://mermaid.js.org/)
     - Export to [Graphviz Dot](https://graphviz.org)
 
-- [What is a graphing library?](#What-is-a-graphing-library?)
+- [What is a graphing library?](#what-is-a-graphing-library)
 - [Examples](#examples)
   - [Depth-first search](#A-Depth-first-search)
   - [Get various centralities for the graph](#Get-various-centralities-for-the-graph)
