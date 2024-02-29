@@ -13,13 +13,16 @@ Experimental graphing library in go
     - Betweenness
 - Clustering
     - K-Means
-- Export to [Mermaid](https://mermaid.js.org/)
+- Exporters
+    - Export to [Mermaid](https://mermaid.js.org/)
+    - Export to [Graphviz Dot](https://graphviz.org)
 
 - [What is a graphing library?](#What-is-a-graphing-library?)
 - [Examples](#examples)
   - [Depth-first search](#A-Depth-first-search)
   - [Get various centralities for the graph](#Get-various-centralities-for-the-graph)
   - [K-Means Clustering](#k-means-clustering)
+  - [Export to various formats](#export-to-various-formats)
     
 > [!NOTE]
 > I haven't used this library for serious experimentations with actual graph data. A lot of this is
@@ -149,6 +152,66 @@ func main() {
 There are 2 clusters
 ```
 
+
+### Export to various formats
+
+The library doesn't come with any dependency, instead it can spit out DSL code that can allow you to
+render the graph in other libs. Eg
+
+```go
+func main() {
+	var g *giraffe.Graph
+	g = giraffe.MakeClusterGraph()
+
+	fmt.Print(g.ParseToMermaid())
+}
+```
+
+```mermaid
+graph TD;
+    0;
+    1;
+    2;
+    3;
+    4;
+    5;
+    0 --> 1;
+    1 --> 2;
+    2 --> 0;
+    3 --> 0;
+    3 --> 4;
+    3 --> 5;
+    5 --> 4;
+```
+
+or [Graphviz](https://graphviz.org)
+
+```go
+func main() {
+	var g *giraffe.Graph
+	g = giraffe.MakeClusterGraph()
+
+	fmt.Print(g.ParseToGraphvizDot())
+}
+```
+```
+digraph G {
+    0;
+    1;
+    2;
+    3;
+    4;
+    5;
+    0 -> 1;
+    1 -> 2;
+    2 -> 0;
+    3 -> 0;
+    3 -> 4;
+    3 -> 5;
+    5 -> 4;
+}
+```
+
+
 and that's it for now! these functions describe the upper and lower-bound of this experimental
 library.
-
